@@ -26,11 +26,11 @@ sequenceDiagram
     server->>browser: main.js script file
     deactivate server
 
-    Note right of browser: browser starts executing main.js and makes a request to the server to get a JSON file
+    Note right of browser: browser starts executing main.js and makes a request to the server to get a JSON file.
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
     server->>browser: [{"content":"fullstacking","date":"2024-09-02T12:43:36.695Z"},...]
     deactivate server
 
-    Note right of browser: The browser then executes the callback function that renders the notes, including the note submitted in the form
+    Note right of browser: The browser then executes the callback function that renders the notes, including the note submitted in the form.
