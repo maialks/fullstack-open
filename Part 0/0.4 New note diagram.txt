@@ -1,0 +1,36 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    Note right of browser: User inserts data and clicks the save button to submit form.
+
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note 
+    activate server
+    server->>browser: 302
+    deactivate server
+
+    Note right of browser: browser reloads the page, default behavior when submitting form.
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server-->>browser: HTML document
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server->>browser: main.css stylesheet file
+    deactivate server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server->>browser: main.js script file
+    deactivate server
+
+    Note right of browser: browser starts executing main.js and makes a request to the server to get a JSON file
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server->>browser: [{"content":"fullstacking","date":"2024-09-02T12:43:36.695Z"},...]
+    deactivate server
+
+    Note right of browser: The browser then executes the callback function that renders the notes, including the note submitted in the form
