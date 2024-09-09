@@ -30,10 +30,16 @@ const Content = (props) => {
   console.log(props)
   return (
     <>
-      <p>{props.part1} {props.exercises[0]}</p>
-      <p>{props.part2} {props.exercises[1]}</p>
-      <p>{props.part3} {props.exercises[2]}</p>
+      <Part part={props.part1} exercise={props.exercises[0]}/>
+      <Part part={props.part2} exercise={props.exercises[1]}/>
+      <Part part={props.part3} exercise={props.exercises[2]}/>
     </>
+  )
+}
+
+const Part = (props) =>{
+  return (
+    <p>{props.part} {props.exercise}</p>
   )
 }
 
