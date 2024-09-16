@@ -7,7 +7,7 @@ const App = ()=> {
   let all = good + bad+ neutral
 
   const handleGood = () => function(){
-    console.log("good +1")
+    console.log("good")
     setGood(good +1)
     all++
   }
@@ -40,18 +40,20 @@ const Statistics = (props) =>{
   const {good, neutral, bad, all} = props.values
   const calclAvg = () =>( good - bad) / all
   if (!all) return (<p>No feedback given</p>)
-  return (
-    <>
-    <StatisticLine text={`good:`} value={good}/>
-    <StatisticLine text={`neutral:`} value={neutral}/>
-    <StatisticLine text={`bad:`} value={bad}/>
-    <StatisticLine text={`all:`} value={all}/>
-    <StatisticLine text={`average:`} value={calclAvg()}/>
-    <StatisticLine text={`positive:`} value={(good / (good + neutral + bad)) * 100}/>
-    </>
+  return(
+    <table>
+      <tbody>
+      <StatisticTableRow col1={"good:"} col2={good}/>
+      <StatisticTableRow col1={"neutral:"} col2={neutral}/>
+      <StatisticTableRow col1={"bad:"} col2={bad}/>
+      <StatisticTableRow col1={"average:"} col2={calclAvg()}/>
+      <StatisticTableRow col1={"positive:"} col2={((good / (good + neutral + bad)) * 100) + "%"}/>
+      </tbody>
+    </table>
   )
 }
-const StatisticLine = (props)=> <p>{props.text} {props.value}</p>
+const StatisticTableRow = (props)=> <tr><StatisticTableCell value = {props.col1}/><StatisticTableCell value = {props.col2}/></tr>
+const StatisticTableCell =(props)=> <td>{props.value}</td>
 
 
 export default App
