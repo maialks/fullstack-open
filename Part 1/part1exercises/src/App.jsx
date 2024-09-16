@@ -1,65 +1,40 @@
-const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
+import { useState } from "react"
+
+const App = ()=> {
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+
+  const handleGood = () => function(){
+    console.log("good +1")
+    setGood(good +1)
+  }
+  const handleNeutral = ()=> function(){
+    console.log("neutral")
+    setNeutral(neutral +1)
+  }
+  const handleBad = ()=> function() {
+    setBad(bad +1)
+    console.log("bad")
   }
   return (
     <div>
-      <Header course = {course}/>
-      <Content course = {course} />
-      <Total course = {course}/>
+    <DisplayTitle text={"give feedback"}/>
+    <Button text={"good"} onClick={handleGood()}/>
+    <Button text={"neutral"} onClick={handleNeutral()}/>
+    <Button text={"bad"} onClick={handleBad()}/>
+    <DisplayTitle text={"statistics"}/>
+    <DisplayText text={`good: ${good}`}/>
+    <DisplayText text={`neutral: ${neutral}`}/>
+    <DisplayText text={`bad: ${bad}`}/>
     </div>
   )
 }
 
-// Refactor the code so that it consists of three new components: Header, Content, and Total
+const DisplayTitle = (props) => <h1>{props.text}</h1>
+const DisplayText = (props) => <h4>{props.text}</h4>
+const Button = (props) => <button onClick={props.onClick}>{props.text}</button>
 
-const Header = (props) =>{
-  return (
-  <>
-    <h1>{props.course.name}</h1>
-  </>
-  )
-}
 
-const Content = (props) => {
-  const parts = props.course.parts
-  return (
-    <>
-      <Part part={parts[0].name} exercise={parts[0].exercises}/>
-      <Part part={parts[1].name} exercise={parts[1].exercises}/>
-      <Part part={parts[2].name} exercise={parts[2].exercises}/>
-    </>
-  )
-}
-
-const Part = (props) =>{
-  return (
-    <p>{props.part} {props.exercise}</p>
-  )
-}
-
-const Total = (props) =>{
-  const parts = props.course.parts
-  return (
-  <p>
-    Number of exercises {parts[0].exercises + 
-    parts[1].exercises + parts[2].exercises}
-  </p>
-  )
-}
 
 export default App
