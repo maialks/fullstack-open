@@ -1,59 +1,44 @@
-import { useState } from "react"
+import { useState } from 'react'
 
-const App = ()=> {
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-  let all = good + bad+ neutral
+const getRandomNum = (min, max) => Math.floor(Math.random() * (max - min+1)) + min
 
-  const handleGood = () => function(){
-    console.log("good")
-    setGood(good +1)
-    all++
+const App = () => {
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
+
+  const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState({})
+
+  const nextAnecdote = () => function(){
+    setSelected((getRandomNum(0, anecdotes.length -1)))
   }
-  const handleNeutral = ()=> function(){
-    console.log("neutral")
-    setNeutral(neutral +1)
-    all++
-  }
-  const handleBad = ()=> function() {
-    console.log("bad")
-    setBad(bad +1)
-    all++
-  }
+
+  const registerVote = () => function() {
+    console.log(selected)
+    setVotes({
+      ...votes,
+      [selected]: votes[selected] ? votes[selected] + 1 : 1 
+    });
+    console.log(votes)
+  };
+
   return (
     <div>
-    <DisplayTitle text={"give feedback"}/>
-    <Button text={"good"} onClick={handleGood()}/>
-    <Button text={"neutral"} onClick={handleNeutral()}/>
-    <Button text={"bad"} onClick={handleBad()}/>
-    <DisplayTitle text={"statistics"}/>
-    <Statistics values={{good, neutral, bad, all}}/>
+      <h3>{anecdotes[selected]}</h3>
+      <p>has {votes[selected] ? votes[selected] : "no" } votes</p>
+      <Button text ={"next anecdote"} onClick={nextAnecdote()}/>
+      <Button text ={"vote"} onClick={registerVote()}/>
     </div>
   )
 }
 
-const DisplayTitle = (props) => <h1>{props.text}</h1>
-const DisplayText = (props) => <p>{props.text}</p>
 const Button = (props) => <button onClick={props.onClick}>{props.text}</button>
-const Statistics = (props) =>{
-  const {good, neutral, bad, all} = props.values
-  const calclAvg = () =>( good - bad) / all
-  if (!all) return (<p>No feedback given</p>)
-  return(
-    <table>
-      <tbody>
-      <StatisticTableRow col1={"good:"} col2={good}/>
-      <StatisticTableRow col1={"neutral:"} col2={neutral}/>
-      <StatisticTableRow col1={"bad:"} col2={bad}/>
-      <StatisticTableRow col1={"average:"} col2={calclAvg()}/>
-      <StatisticTableRow col1={"positive:"} col2={((good / (good + neutral + bad)) * 100) + "%"}/>
-      </tbody>
-    </table>
-  )
-}
-const StatisticTableRow = (props)=> <tr><StatisticTableCell value = {props.col1}/><StatisticTableCell value = {props.col2}/></tr>
-const StatisticTableCell =(props)=> <td>{props.value}</td>
-
-
 export default App
