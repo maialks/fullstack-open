@@ -42,16 +42,16 @@ const Statistics = (props) =>{
   if (!all) return (<p>No feedback given</p>)
   return (
     <>
-    <DisplayText text={`good: ${good}`}/>
-    <DisplayText text={`neutral: ${neutral}`}/>
-    <DisplayText text={`bad: ${bad}`}/>
-    <DisplayText text={`all: ${all}`}/>
-    <p>average: {calclAvg()} </p>
-    <p>positive: {(good / (good + neutral + bad)) * 100} %</p>
+    <StatisticLine text={`good:`} value={good}/>
+    <StatisticLine text={`neutral:`} value={neutral}/>
+    <StatisticLine text={`bad:`} value={bad}/>
+    <StatisticLine text={`all:`} value={all}/>
+    <StatisticLine text={`average:`} value={calclAvg()}/>
+    <StatisticLine text={`positive:`} value={(good / (good + neutral + bad)) * 100}/>
     </>
   )
 }
-
+const StatisticLine = (props)=> <p>{props.text} {props.value}</p>
 
 
 export default App
