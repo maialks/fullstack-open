@@ -27,18 +27,28 @@ const App = () => {
       ...votes,
       [selected]: votes[selected] ? votes[selected] + 1 : 1 
     });
-    console.log(votes)
   };
+
+  const getMostVoted = () => {
+    if (!Object.keys(votes)[0]) return false
+    const [key, value] = Object.entries(votes).reduce((acc, cur) => cur[1] > acc[1] ? cur : acc)
+    return [key, value]
+  } 
+
 
   return (
     <div>
-      <h3>{anecdotes[selected]}</h3>
+      <Display title={"Anecdotes of the day"} body ={anecdotes[selected]}/>
       <p>has {votes[selected] ? votes[selected] : "no" } votes</p>
       <Button text ={"next anecdote"} onClick={nextAnecdote()}/>
       <Button text ={"vote"} onClick={registerVote()}/>
+      <Display title={"Anecdote with most votes"} body ={getMostVoted()? `${anecdotes[getMostVoted()[0]]}
+      has ${votes[getMostVoted()[0]]} votes` : "no anecdote was voted yet"}/>
     </div>
   )
 }
+
+const Display = (props) => <> <h2>{props.title}</h2><h3>{props.body}</h3></>
 
 const Button = (props) => <button onClick={props.onClick}>{props.text}</button>
 export default App
