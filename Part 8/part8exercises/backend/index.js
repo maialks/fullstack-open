@@ -126,6 +126,9 @@ const typeDefs = `
       name: String!
       born: Int!
     ) : Author
+    incrementBookCount(
+      name: String!
+    ) : Author
   }
 `
 
@@ -140,10 +143,11 @@ const resolvers = {
       })
     },
     allAuthors: () => {
-      const authors = {}
-      books.forEach((b) => (authors[b.author] = (authors[b.author] || 0) + 1))
-      return Object.entries(authors).map(([name, bookCount]) => {
-        return { name, bookCount }
+      return authors.map((a) => {
+        return {
+          ...a,
+          bookCount: books.filter((b) => b.author === a.name).length,
+        }
       })
     },
     bookCount: () => books.length,
@@ -160,26 +164,24 @@ const resolvers = {
       return book
     },
     editAuthor: (root, args) => {
-      const [authorBooks, otherBooks] = books.reduce(
-        (acc, cur) => {
-          if (cur.author === args.name) {
-            return [[...acc[0], cur], acc[1]]
-          } else {
-            return [acc[0], [...acc[1], cur]]
-          }
-        },
-        [[], []]
-      )
-      if (!authorBooks.length) return null
-      const updatedBooks = authorBooks.map((b) => {
-        return { ...b, born: args.born }
-      })
-
-      books = [...updatedBooks, ...otherBooks]
+      console.log('chama')
+      const authorIndex = authors.findIndex((a) => a.name === args.name)
+      if (authorIndex === -1) return null
+      const updatedAuthor = { ...authors[authorIndex], born: args.born }
+      authors[authorIndex] = updatedAuthor
+      return updatedAuthor
+    },
+    incrementBookCount: (root, args) => {
+      const authorIndex = authors.findIndex((a) => a.name === args.name)
+      if (authorIndex === -1) return null
+      const currentCount = authors[authorIndex][bookCount]
+      authors[authorIndex] = {
+        ...authors[authorIndex],
+        bookCount: currentCount + 1,
+      }
       return {
         name: args.name,
-        bookCount: authorBooks.length,
-        born: args.born,
+        bookCount: currentCount + 1,
       }
     },
   },
