@@ -12,7 +12,7 @@ const styles = {
     fontFamily: 'sans-serif',
     padding: '2rem',
     marginLeft: 15,
-    minHeight: '100vh',
+    minHeight: '100%',
   },
   authorUpdateContainer: {
     marginTop: 15,
@@ -88,7 +88,6 @@ const selectStyles = {
     borderRadius: 4,
     width: '100%',
     boxSizing: 'border-box',
-    marginBottom: 16,
   }),
   menu: (base) => ({
     ...base,
@@ -121,14 +120,14 @@ const selectStyles = {
 }
 
 const Authors = () => {
-  const res = useQuery(GET_AUTHORS)
+  const { loading, data } = useQuery(GET_AUTHORS)
   const [selected, setSelected] = useState(null)
   const dateRef = useRef(null)
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: GET_AUTHORS }],
   })
 
-  if (res.loading) {
+  if (loading) {
     return <LoadingSpinner />
   }
 
@@ -140,8 +139,7 @@ const Authors = () => {
     editAuthor({ variables: { name: selected.value, born } })
   }
 
-  const authors = res.data.allAuthors
-  const options = authors.map((a) => {
+  const options = data.allAuthors.map((a) => {
     return { value: a.name, label: a.name }
   })
 
@@ -159,7 +157,7 @@ const Authors = () => {
             </tr>
           </thead>
           <tbody>
-            {authors.map((a) => (
+            {data.allAuthors.map((a) => (
               <tr key={a.name}>
                 <td style={tableStyles.thtd}>{a.name}</td>
                 <td style={tableStyles.thtd}>{a.born || '----'}</td>

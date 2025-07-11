@@ -41,11 +41,12 @@ const typeDefs = `
   }
   
   type Query {
-    allBooks(author: String, genre: String): [Book!]!
+    allBooks(author: String, genres: [String]): [Book!]!
     allAuthors: [Author!]!
     bookCount: Int!
     authorCount: Int!
     me: User
+    genres: [String!]!
   }
 
     type Mutation {
@@ -78,9 +79,10 @@ const typeDefs = `
 const resolvers = {
   Query: {
     allBooks: async (root, args) => {
-      if (!args.author && !args.genre) return Book.find({}).populate('author')
-      if (args.genre && !args.author)
-        return Book.find({ genres: { $in: [args.genre] } }).populate('author')
+      if ((!args.author && !args.genres) || !args.genres.length)
+        return Book.find({}).populate('author')
+      if (args.genres.length && !args.author)
+        return Book.find({ genres: { $in: args.genres } }).populate('author')
 
       const author = await Author.findOne({ name: args.author })
       if (!author)
@@ -91,21 +93,28 @@ const resolvers = {
           },
         })
 
-      if (args.author && !args.genre)
+      if (args.author && !args.genres.length)
         return Book.find({ author: author._id }).populate('author')
       return Book.find({
         author: author._id,
-        genres: { $in: [args.genre] },
+        genres: { $in: args.genres },
       }).populate('author')
     },
-    allAuthors: () => {
-      return Author.find({})
+    allAuthors: async () => {
+      return await Author.find({})
     },
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     me: (root, args, context) => {
-      console.log(context)
       return context.currentUser
+    },
+    genres: async () => {
+      const aggregated = await Book.aggregate([
+        { $unwind: '$genres' },
+        { $group: { _id: '$genres' } },
+        { $project: { genre: '$_id', _id: 0 } },
+      ])
+      return aggregated.map((obj) => obj.genre)
     },
   },
   Author: {
@@ -221,7 +230,6 @@ const resolvers = {
           },
         })
       }
-
       const userForToken = {
         username: user.username,
         id: user._id,

@@ -2,16 +2,44 @@ import { useState } from 'react'
 import useField from '../hooks/useField'
 import Navbar from './Navbar'
 import { useMutation } from '@apollo/client'
-import { CREATE_BOOK } from '../queries'
+import { CREATE_BOOK, GET_BOOKS_AND_USER_FAVORITE } from '../queries'
+import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 const NewBook = () => {
+  const { token } = useAuth()
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (!token) navigate('/', { replace: true })
+  }, [])
+
   const title = useField('text')
   const author = useField('text')
   const published = useField('number', 2025)
   const genre = useField('text')
+  const [errorMessage, setErrorMessage] = useState('')
   const [genres, setGenres] = useState([])
 
-  const [createBook] = useMutation(CREATE_BOOK)
+  const [createBook] = useMutation(CREATE_BOOK, {
+    update: (cache, response) => {
+      cache.updateQuery(
+        { query: GET_BOOKS_AND_USER_FAVORITE, variables: { genres: [] } },
+        ({ allBooks, me }) => {
+          if (!allBooks) return
+          return {
+            allBooks: allBooks.concat(response.data.addBook),
+            me,
+          }
+        }
+      )
+    },
+    onError: (error) => {
+      console.log(error)
+      setErrorMessage(error.message)
+      setTimeout(() => setErrorMessage(''), 5000)
+    },
+  })
 
   const inputStyles = {
     container: {
@@ -68,7 +96,7 @@ const NewBook = () => {
   const submit = async (e) => {
     e.preventDefault()
 
-    const newBook = await createBook({
+    await createBook({
       variables: {
         title: title.inputProps.value,
         author: author.inputProps.value,
@@ -76,8 +104,6 @@ const NewBook = () => {
         genres: genres,
       },
     })
-
-    console.log(newBook)
 
     title.setValue('')
     author.setValue('')
@@ -89,6 +115,17 @@ const NewBook = () => {
   return (
     <div>
       <Navbar />
+      {errorMessage && (
+        <h2
+          style={{
+            color: 'red',
+            backgroundColor: '#121212',
+            padding: '10px 0px 0px 30px',
+          }}
+        >
+          {errorMessage}
+        </h2>
+      )}
       <div style={inputStyles.container}>
         <h2>Add New Book</h2>
         <form onSubmit={submit} style={inputStyles.form}>

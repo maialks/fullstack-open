@@ -1,14 +1,16 @@
 import Navbar from './Navbar'
-import { GET_BOOKS } from '../queries'
+import { GET_GENRES, GET_BOOKS_AND_USER_FAVORITE } from '../queries'
 import { useQuery } from '@apollo/client'
 import LoadingSpinner from './LoadingSpinner'
+import { useEffect, useState } from 'react'
+import Select from 'react-select'
 
 const TableStyles = {
   container: {
     marginLeft: 15,
     color: '#e0e0e0',
     backgroundColor: '#121212',
-    minHeight: '100vh',
+    minHeight: '100%',
     padding: 20,
     fontFamily: 'Arial, sans-serif',
   },
@@ -36,22 +38,123 @@ const TableStyles = {
 }
 
 const Books = () => {
-  const res = useQuery(GET_BOOKS)
+  const [genreFilter, setGenreFilter] = useState([])
+  const [options, setOptions] = useState([])
+  const [books, setBooks] = useState([])
+  const [selectValue, setSelectValue] = useState([])
+  const { data: genresData, loading: genresLoading } = useQuery(GET_GENRES)
+  const { data, loading } = useQuery(GET_BOOKS_AND_USER_FAVORITE, {
+    variables: {
+      genres: genreFilter,
+    },
+  })
 
-  if (res.loading) {
+  useEffect(() => {
+    if (loading || !data) return
+    setBooks(data.allBooks)
+  }, [data, loading])
+
+  useEffect(() => {
+    if (genresLoading) return
+    setOptions(genresData.genres.map((g) => ({ label: g, value: g })))
+  }, [genresData, genresLoading])
+
+  const handleSelectChange = (option) => {
+    setGenreFilter(option.map((o) => o.value))
+    setSelectValue(option)
+  }
+
+  if (loading) {
     return (
       <div>
-        <LoadingSpinner />
+        <Navbar />
+        <div style={TableStyles.container}>
+          <h2>Books</h2>
+          <LoadingSpinner />
+        </div>
       </div>
     )
   }
 
-  console.log(res)
+  const userFav = data.me.favoriteGenre
+  const selectStyles = {
+    container: (base) => ({
+      ...base,
+      maxWidth: '59%',
+      marginTop: 10,
+    }),
+    menuList: (base) => ({
+      ...base,
+      backgroundColor: '#1e1e1e',
+      color: '#e0e0e0',
+      border: '1px solid #333',
+      padding: '8px',
+      borderRadius: 4,
+      width: '100%',
+      boxSizing: 'border-box',
+      maxHeight: '200px',
+    }),
+    menu: (base) => ({
+      ...base,
+      backgroundColor: 'transparent',
+    }),
+    control: (base) => ({
+      ...base,
+      backgroundColor: '#1e1e1e',
+      color: '#e0e0e0',
+      border: '1px solid #333',
+      borderRadius: 4,
+      width: '100%',
+      boxSizing: 'border-box',
+      marginBottom: 16,
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isFocused ? '#272727' : '#1e1e1e',
+      borderRadius: 4,
+      cursor: 'pointer',
+    }),
+    input: (base) => ({
+      ...base,
+      color: '#ffffff',
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: '#ffffff',
+    }),
+    multiValueLabel: (base) => ({
+      ...base,
+      color: '#ffffff',
+    }),
+    multiValue: (base) => ({
+      ...base,
+      backgroundColor: '#121212',
+    }),
+  }
 
-  const books = res.data.allBooks
+  const buttonStyles = {
+    padding: '8px 16px',
+    backgroundColor: '#272727',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 4,
+    cursor: 'pointer',
+    marginTop: 8,
+    marginRight: 8,
+  }
+
+  const filterFavorite = () => {
+    setGenreFilter([userFav])
+    setSelectValue([{ label: userFav, value: userFav }])
+  }
+
+  const filterClear = () => {
+    setGenreFilter([])
+    setSelectValue([])
+  }
 
   return (
-    <div>
+    <div style={{ minHeight: '100vh', backgroundColor: '#121212' }}>
       <Navbar />
       <div style={TableStyles.container}>
         <h2>Books</h2>
@@ -69,12 +172,27 @@ const Books = () => {
             {books.map((b) => (
               <tr key={b.title}>
                 <td style={TableStyles.thtd}>{b.title}</td>
-                <td style={TableStyles.thtd}>{b.author}</td>
+                <td style={TableStyles.thtd}>{b.author.name}</td>
                 <td style={TableStyles.thtd}>{b.published}</td>
               </tr>
             ))}
           </tbody>
         </table>
+        <h3 style={{ margin: '10px 0 0 5px' }}>Filter By Genre:</h3>
+        <Select
+          closeMenuOnSelect={false}
+          isMulti
+          styles={selectStyles}
+          options={options}
+          onChange={handleSelectChange}
+          value={selectValue}
+        />
+        <button style={buttonStyles} onClick={filterFavorite}>
+          Favorite Genre
+        </button>
+        <button style={buttonStyles} onClick={filterClear}>
+          Show All
+        </button>
       </div>
     </div>
   )
