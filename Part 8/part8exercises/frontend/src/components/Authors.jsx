@@ -4,6 +4,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import LoadingSpinner from './LoadingSpinner'
 import { useRef, useState } from 'react'
 import Select from 'react-select'
+import Notification from './Notification'
 
 const styles = {
   container: {
@@ -146,6 +147,8 @@ const Authors = () => {
   return (
     <div>
       <Navbar />
+
+      <Notification />
       <div style={styles.container}>
         <h2>Authors</h2>
         <table style={tableStyles.table}>

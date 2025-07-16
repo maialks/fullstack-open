@@ -6,13 +6,16 @@ import { CREATE_BOOK, GET_BOOKS_AND_USER_FAVORITE } from '../queries'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import Notification from './Notification'
+import { useNotification } from '../context/NotificationContext'
 
 const NewBook = () => {
-  const { token } = useAuth()
+  const { token, isLoading } = useAuth()
+  const showNotification = useNotification()
   const navigate = useNavigate()
   useEffect(() => {
-    if (!token) navigate('/', { replace: true })
-  }, [])
+    if (!token && !isLoading) navigate('/', { replace: true })
+  }, [isLoading])
 
   const title = useField('text')
   const author = useField('text')
@@ -23,6 +26,11 @@ const NewBook = () => {
 
   const [createBook] = useMutation(CREATE_BOOK, {
     update: (cache, response) => {
+      const data = cache.readQuery({
+        query: GET_BOOKS_AND_USER_FAVORITE,
+        variables: { genres: [] },
+      })
+      if (!data) return
       cache.updateQuery(
         { query: GET_BOOKS_AND_USER_FAVORITE, variables: { genres: [] } },
         ({ allBooks, me }) => {
@@ -36,8 +44,7 @@ const NewBook = () => {
     },
     onError: (error) => {
       console.log(error)
-      setErrorMessage(error.message)
-      setTimeout(() => setErrorMessage(''), 5000)
+      showNotification(error.message)
     },
   })
 
@@ -95,12 +102,11 @@ const NewBook = () => {
 
   const submit = async (e) => {
     e.preventDefault()
-
     await createBook({
       variables: {
         title: title.inputProps.value,
         author: author.inputProps.value,
-        published: published.inputProps.value,
+        published: +published.inputProps.value,
         genres: genres,
       },
     })
@@ -115,17 +121,7 @@ const NewBook = () => {
   return (
     <div>
       <Navbar />
-      {errorMessage && (
-        <h2
-          style={{
-            color: 'red',
-            backgroundColor: '#121212',
-            padding: '10px 0px 0px 30px',
-          }}
-        >
-          {errorMessage}
-        </h2>
-      )}
+      <Notification />
       <div style={inputStyles.container}>
         <h2>Add New Book</h2>
         <form onSubmit={submit} style={inputStyles.form}>

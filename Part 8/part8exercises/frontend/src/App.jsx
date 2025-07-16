@@ -5,6 +5,8 @@ import { LOGIN, GET_USER_DATA } from './queries'
 import { useState, useEffect } from 'react'
 import { useAuth } from './context/AuthContext'
 import LoadingSpinner from './components/LoadingSpinner'
+import Notification from './components/Notification'
+import { useNotification } from './context/NotificationContext'
 
 const LoginForm = ({ login }) => {
   const username = useField('text')
@@ -15,7 +17,6 @@ const LoginForm = ({ login }) => {
       marginLeft: 15,
       color: '#e0e0e0',
       backgroundColor: '#121212',
-      minHeight: '100vh',
       padding: 20,
       fontFamily: 'Arial, sans-serif',
     },
@@ -86,16 +87,14 @@ const LoginForm = ({ login }) => {
 }
 
 const App = () => {
-  const [errorMessage, setErrorMessage] = useState('')
   const { setToken } = useAuth()
-  const { loading, data } = useQuery(GET_USER_DATA)
+  const { loading, data, refetch } = useQuery(GET_USER_DATA)
+  const { showNotification } = useNotification()
 
   const [login, result] = useMutation(LOGIN, {
     onError: async (error) => {
-      setErrorMessage(error.message)
+      showNotification(error.message)
       console.log(error.message)
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      setErrorMessage('')
     },
   })
 
@@ -104,6 +103,8 @@ const App = () => {
     const token = result.data.login.value
     setToken(token)
     localStorage.setItem('booksapp-user-token', token)
+
+    refetch()
   }, [result.data])
 
   if (loading) {
@@ -118,17 +119,7 @@ const App = () => {
   return (
     <div>
       <Navbar />
-      {errorMessage && (
-        <h2
-          style={{
-            color: 'red',
-            backgroundColor: '#121212',
-            padding: '10px 0px 0px 30px',
-          }}
-        >
-          {errorMessage}
-        </h2>
-      )}
+      <Notification />
       {!user && <LoginForm login={login} />}
       {user && <h2>Welcome {user.username}</h2>}
     </div>

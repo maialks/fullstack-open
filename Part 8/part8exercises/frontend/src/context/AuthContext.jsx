@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { jwtDecode } from 'jwt-decode'
 import { useApolloClient } from '@apollo/client'
 
 const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null)
+  const [isLoading, setLoading] = useState(true)
   const client = useApolloClient()
 
   useEffect(() => {
@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     if (storedToken) {
       setToken(storedToken)
     }
+    setLoading(false)
   }, [])
 
   const logout = () => {
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ token, setToken, logout }}>
+    <AuthContext.Provider value={{ token, setToken, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   )

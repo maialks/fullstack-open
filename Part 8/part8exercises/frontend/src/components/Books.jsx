@@ -1,9 +1,34 @@
-import Navbar from './Navbar'
-import { GET_GENRES, GET_BOOKS_AND_USER_FAVORITE } from '../queries'
-import { useQuery } from '@apollo/client'
-import LoadingSpinner from './LoadingSpinner'
+// React
 import { useEffect, useState } from 'react'
 import Select from 'react-select'
+
+// Apollo Client & GraphQL
+import { useQuery, useSubscription } from '@apollo/client'
+import { GET_GENRES, GET_BOOKS_AND_USER_FAVORITE, BOOK_ADDED } from '../queries'
+
+// Components & Context
+import Navbar from './Navbar'
+import LoadingSpinner from './LoadingSpinner'
+import Notification from './Notification'
+import { useNotification } from '../context/NotificationContext'
+
+export const updateCache = (cache, query, addedBook) => {
+  const unique = (books) => {
+    let seen = new Set()
+    return books.filter((book) => {
+      const id = book.id
+      return seen.has(id) ? false : seen.add(id)
+    })
+  }
+
+  cache.updateQuery(query, (data) => {
+    if (!data || !data.allBooks) return
+    return {
+      ...data,
+      allBooks: unique(data.allBooks.concat(addedBook)),
+    }
+  })
+}
 
 const TableStyles = {
   container: {
@@ -38,14 +63,34 @@ const TableStyles = {
 }
 
 const Books = () => {
+  // State Hooks
   const [genreFilter, setGenreFilter] = useState([])
   const [options, setOptions] = useState([])
   const [books, setBooks] = useState([])
   const [selectValue, setSelectValue] = useState([])
+
+  // Query Hooks
   const { data: genresData, loading: genresLoading } = useQuery(GET_GENRES)
   const { data, loading } = useQuery(GET_BOOKS_AND_USER_FAVORITE, {
-    variables: {
-      genres: genreFilter,
+    variables: { genres: genreFilter },
+  })
+
+  const { showNotification } = useNotification()
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded
+      showNotification(
+        `New book: ${addedBook.title} by ${addedBook.author.name}`
+      )
+      updateCache(
+        client.cache,
+        {
+          query: GET_BOOKS_AND_USER_FAVORITE,
+          variables: { genres: genreFilter },
+        },
+        addedBook
+      )
     },
   })
 
@@ -76,7 +121,7 @@ const Books = () => {
     )
   }
 
-  const userFav = data.me.favoriteGenre
+  const userFav = data?.me?.favoriteGenre
   const selectStyles = {
     container: (base) => ({
       ...base,
@@ -144,6 +189,7 @@ const Books = () => {
   }
 
   const filterFavorite = () => {
+    if (!userFav) return
     setGenreFilter([userFav])
     setSelectValue([{ label: userFav, value: userFav }])
   }
@@ -156,6 +202,7 @@ const Books = () => {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#121212' }}>
       <Navbar />
+      <Notification />
       <div style={TableStyles.container}>
         <h2>Books</h2>
         <table style={TableStyles.table}>
@@ -187,9 +234,11 @@ const Books = () => {
           onChange={handleSelectChange}
           value={selectValue}
         />
-        <button style={buttonStyles} onClick={filterFavorite}>
-          Favorite Genre
-        </button>
+        {userFav && (
+          <button style={buttonStyles} onClick={filterFavorite}>
+            Favorite Genre
+          </button>
+        )}
         <button style={buttonStyles} onClick={filterClear}>
           Show All
         </button>
