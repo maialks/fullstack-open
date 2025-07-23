@@ -1,32 +1,8 @@
 {
-  "name": "part9exercises",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "calcBmi": "ts-node ./features/calculators/bmiCalculator.ts",
-    "calcExercises": "ts-node ./features/calculators/exerciseCalculator.ts",
-    "start": "nodemon ./index.ts"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "devDependencies": {
-    "@eslint/js": "^9.31.0",
-    "@stylistic/eslint-plugin": "^5.2.0",
-    "@types/eslint__js": "^8.42.3",
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.0.14",
-    "eslint": "^9.31.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-prettier": "^5.5.1",
-    "nodemon": "^3.1.10",
-    "prettier": "^3.6.2",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.37.0"
-  },
   "dependencies": {
-    "express": "^5.1.0"
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19"
   }
 }
