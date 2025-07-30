@@ -1,22 +1,22 @@
-export interface Diagnosis {
-  code: string;
-  name: string;
-  latin?: string;
-}
+export const WEATHER_VALUES = [
+  'sunny',
+  'rainy',
+  'cloudy',
+  'stormy',
+  'windy',
+] as const;
+export const VISIBILITY_VALUES = ['great', 'good', 'ok', 'poor'] as const;
 
-export enum Gender {
-  Male = "male",
-  Female = "female",
-  Other = "other"
-}
+export type Weather = (typeof WEATHER_VALUES)[number];
+export type Visibility = (typeof VISIBILITY_VALUES)[number];
 
-export interface Patient {
-  id: string;
-  name: string;
-  occupation: string;
-  gender: Gender;
-  ssn?: string;
-  dateOfBirth?: string;
-}
+export type DiaryEntry = {
+  id: number;
+  date: string;
+  weather: Weather;
+  visibility: Visibility;
+  comment: string;
+};
 
-export type PatientFormValues = Omit<Patient, "id" | "entries">;
+export type NonSensitiveDiaryEntry = Omit<DiaryEntry, 'comment'>;
+export type NewDiaryEntry = Omit<DiaryEntry, 'id'>;
