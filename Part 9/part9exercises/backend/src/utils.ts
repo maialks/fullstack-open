@@ -1,68 +1,75 @@
+import {
+  EntryWithoutId,
+  Gender,
+  HealthCheckRating,
+  NewPatitent,
+} from './types';
+import z from 'zod';
+import diagnoses from '../data/diagnoses';
 
-import { NewDiaryEntry, Weather, Visibility } from './types';
+const getDiagnosisCodes = () => diagnoses.map((d) => d.code);
 
-const isString = (text: unknown): text is string => {
-  return typeof text === 'string' || text instanceof String;
+const entryBaseSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  date: z.iso.date(),
+  specialist: z.string(),
+  diagnosisCodes: z
+    .array(
+      z.string().refine(
+        (code) => {
+          const diagnosesCodes = getDiagnosisCodes();
+          return diagnosesCodes.includes(code);
+        },
+        { message: 'código de diagnóstico inválido' }
+      )
+    )
+    .optional(),
+});
+
+const newEntryBaseSchema = entryBaseSchema.omit({ id: true });
+
+const newHospitalEntrySchema = newEntryBaseSchema.extend({
+  type: z.literal('Hospital'),
+  discharge: z.object({ date: z.iso.date(), criteria: z.string() }),
+});
+
+const newHealthCheckEntrySchema = newEntryBaseSchema.extend({
+  type: z.literal('HealthCheck'),
+  healthCheckRating: z.enum(HealthCheckRating),
+});
+
+const newOccupationalEntrySchema = newEntryBaseSchema.extend({
+  type: z.literal('OccupationalHealthcare'),
+  employerName: z.string(),
+  sickLeave: z
+    .object({ startDate: z.iso.date(), endDate: z.iso.date() })
+    .optional(),
+});
+
+export const newEntrySchema = z.discriminatedUnion('type', [
+  newHospitalEntrySchema,
+  newOccupationalEntrySchema,
+  newHealthCheckEntrySchema,
+]);
+
+export const patientBaseSchema = z.object({
+  name: z.string(),
+  dateOfBirth: z.iso.date(),
+  ssn: z.string(),
+  gender: z.enum(Gender),
+  occupation: z.string(),
+});
+
+const toNewPatient = (object: unknown): NewPatitent => {
+  return patientBaseSchema.parse(object);
 };
 
-const parseComment = (comment: unknown): string => {
-  if (!isString(comment)) {
-    throw new Error('Incorrect or missing comment');
-  }
-
-  return comment;
+const toNewEntry = (object: unknown): EntryWithoutId => {
+  return newEntrySchema.parse(object);
 };
 
-const isDate = (date: string): boolean => {
-  return Boolean(Date.parse(date));
+export default {
+  toNewPatient,
+  toNewEntry,
 };
-
-const parseDate = (date: unknown): string => {
-  if (!isString(date) || !isDate(date)) {
-      throw new Error('Incorrect date: ' + date);
-  }
-  return date;
-};
-
-const isWeather = (param: string): param is Weather => {
-  return Object.values(Weather).map(v => v.toString()).includes(param);
-};
-
-const parseWeather = (weather: unknown): Weather => {
-  if (!isString(weather) || !isWeather(weather)) {
-    throw new Error('Incorrect weather: ' + weather);
-  }
-  return weather;
-};
-
-const isVisibility = (param: string): param is Visibility => {
-  return Object.values(Visibility).map(v => v.toString()).includes(param);
-};
-
-const parseVisibility = (visibility: unknown): Visibility => {
-  if (!isString(visibility) || !isVisibility(visibility)) {
-      throw new Error('Incorrect visibility: ' + visibility);
-  }
-  return visibility;
-};
-
-const toNewDiaryEntry = (object: unknown): NewDiaryEntry => {
-  if ( !object || typeof object !== 'object' ) {
-    throw new Error('Incorrect or missing data');
-  }
-
-  if ('comment' in object && 'date' in object && 'weather' in object && 'visibility' in object)  {
-    const newEntry: NewDiaryEntry = {
-      weather: parseWeather(object.weather),
-      visibility: parseVisibility(object.visibility),
-      date: parseDate(object.date),
-      comment: parseComment(object.comment)
-    };
-  
-    return newEntry;
-  }
-
-  throw new Error('Incorrect data: a field missing');
-};
-
-export default toNewDiaryEntry;

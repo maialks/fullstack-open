@@ -1,13 +1,9 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { NotificationProvider } from './context/NotificationContext.tsx';
-import './index.css';
+import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
+import { PatientsProvider } from './contexts/PatientsContext.tsx';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <NotificationProvider>
-      <App />
-    </NotificationProvider>
-  </StrictMode>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <PatientsProvider>
+    <App />,
+  </PatientsProvider>
 );
