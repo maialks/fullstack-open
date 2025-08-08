@@ -47,10 +47,19 @@ const addEntry = async (
 
         // Se houver múltiplos erros de validação
         if (Array.isArray(validationResponse)) {
-          const messages = validationResponse.map((err: any) => {
-            if (err.code === 'custom') return err.message;
-            if (err.expected && err.path?.[0]) {
-              return `Expected ${err.expected} on ${err.path[0]} field`;
+          const messages = validationResponse.map((err: unknown) => {
+            if (typeof err === 'object' && err !== null) {
+              if ('code' in err && 'message' in err && err?.code === 'custom')
+                return err.message;
+              if (
+                'expected' in err &&
+                'path' in err &&
+                Array.isArray(err.path) &&
+                err.expected &&
+                err.path[0]
+              ) {
+                return `Expected ${err.expected} on ${err.path[0]} field`;
+              }
             }
             return 'Unknown validation error';
           });

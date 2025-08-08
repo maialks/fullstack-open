@@ -49,7 +49,7 @@ const PatientPage: React.FC<PatientPageProps> = ({ diagnoses }) => {
     };
 
     fetchPatient();
-  }, [id, navigate]);
+  }, [id, patients, navigate]);
 
   // Render loading / not found state
   if (patient.loading) return <Typography variant='h3'>Loading...</Typography>;

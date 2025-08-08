@@ -14,7 +14,7 @@ function HospitalFields({ onChange, resetSignal, error }: HospitalFieldsProps) {
 
   useEffect(() => {
     onChange({ discharge: { date, criteria } });
-  }, [date, criteria]);
+  }, [date, criteria, onChange]);
 
   useEffect(() => {
     setCriteria('');

@@ -1,10 +1,6 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { useState } from 'react';
+import { PatientsContext } from './patients';
 import type { Patient } from '../types';
-
-const PatientsContext = createContext<{
-  patients: Patient[];
-  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
-} | null>(null);
 
 export const PatientsProvider = ({
   children,
@@ -18,11 +14,4 @@ export const PatientsProvider = ({
       {children}
     </PatientsContext.Provider>
   );
-};
-
-export const usePatients = () => {
-  const context = useContext(PatientsContext);
-  if (context === null)
-    throw new Error('usePatients must be used within a PatientsProvider');
-  return context;
 };

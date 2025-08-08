@@ -3,7 +3,7 @@ import AddEntryForm from './AddEntryForm';
 import type { Patient } from '../../types';
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute' as const,
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',

@@ -4,7 +4,7 @@ import { Box, SxProps, Typography } from '@mui/material';
 function Notification() {
   const { notification } = useNotification();
   const style: SxProps = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute' as const,
     top: '6%',
     left: '50%',
     transform: 'translate(-50%, -50%)',

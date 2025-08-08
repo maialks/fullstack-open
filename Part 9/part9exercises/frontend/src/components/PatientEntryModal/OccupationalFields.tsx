@@ -34,7 +34,7 @@ function OccupationalFields({
           },
         }),
     });
-  }, [employerName, sickLeave]);
+  }, [employerName, sickLeave, onChange]);
 
   useEffect(() => {
     setEmployerName('');

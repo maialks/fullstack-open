@@ -15,7 +15,6 @@ import PatientListPage from './components/PatientListPage';
 import PatientPage from './components/PatientPage';
 
 const App = () => {
-  // const [patients, setPatients] = useState<Patient[]>([]);
   const { patients, setPatients } = usePatients();
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
@@ -33,7 +32,7 @@ const App = () => {
       setDiagnoses(diagnoses);
     };
     void fetchDiagnoses();
-  }, []);
+  }, [setPatients]);
 
   return (
     <div className='App'>

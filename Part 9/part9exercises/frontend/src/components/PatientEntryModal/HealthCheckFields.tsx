@@ -24,7 +24,7 @@ function HealthCheckFields({
 
   useEffect(() => {
     onChange({ healthCheckRating: 1 });
-  }, [rating]);
+  }, [rating, onChange]);
 
   useEffect(() => {
     setRating('');
@@ -44,7 +44,6 @@ function HealthCheckFields({
   };
 
   const ratingEntries = Object.entries(HealthCheckRating);
-  console.log(ratingEntries.slice(Math.floor(ratingEntries.length / 2)));
 
   return (
     <>
