@@ -1,0 +1,57 @@
+Script started on 2025-11-03 14:38:42-03:00 [TERM="xterm-256color" TTY="/dev/pts/2" COLUMNS="80" LINES="24"]
+
+LKS-PC% docker start -i brave_colden
+root@a93f11f890b4:/# apt-get install curl
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  ca-certificates krb5-locales libbrotli1 libcurl4t64 libgssapi-krb5-2 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap-common libldap2 libnghttp2-14 libpsl5t64
+  librtmp1 libsasl2-2 libsasl2-modules libsasl2-modules-db libssh-4 openssl publicsuffix
+The following NEW packages will be installed:
+  ca-certificates curl krb5-locales libbrotli1 libcurl4t64 libgssapi-krb5-2 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 libldap-common libldap2 libnghttp2-14 libpsl5t64
+  librtmp1 libsasl2-2 libsasl2-modules libsasl2-modules-db libssh-4 openssl publicsuffix
+0 upgraded, 21 newly installed, 0 to remove and 2 not upgraded.
+Need to get 3568 kB of archives.
+After this operation, 9212 kB of additional disk space will be used.
+Fetched 3568 kB in 3s (1200 kB/s)
+Setting up curl (8.5.0-2ubuntu10.6) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.6) ...
+
+
+using installation method recommended by Node.js docs at https://nodejs.org/en/download 
+
+root@a93f11f890b4:/# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+=> Downloading nvm as script to /root/.nvm
+=> Appending nvm source string to /root/.bashrc
+=> Appending bash_completion source string to /root/.bashrc
+=> Close and reopen your terminal to start using nvm or run the following to use it now:
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+
+root@a93f11f890b4:/# . "$HOME/.nvm/nvm.sh"
+
+root@a93f11f890b4:/# nvm install 24
+Downloading and installing node v24.11.0...
+Downloading https://nodejs.org/dist/v24.11.0/node-v24.11.0-linux-x64.tar.gz...
+######################################################################## 100.0%
+Computing checksum with sha256sum
+Checksums matched!
+Now using node v24.11.0 (npm v11.6.1)
+Creating default alias: default -> 24 (-> v24.11.0)
+
+root@a93f11f890b4:/# node -v
+v24.11.0
+
+root@a93f11f890b4:/# npm -v
+11.6.1
+
+root@a93f11f890b4:/# node /usr/src/app/index.js
+Hello World
+
+root@a93f11f890b4:/# exit
+LKS-PC% exit
+
+Script done on 2025-11-03 14:44:31-03:00 [COMMAND_EXIT_CODE="0"]

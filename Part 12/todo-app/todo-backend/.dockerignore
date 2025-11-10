@@ -1,0 +1,6 @@
+README.md
+node_modules
+.dockerignore
+.gitignore
+Dockerfile
+redis_data

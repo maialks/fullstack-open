@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body class="h-full">
+    <div id="root" class="h-full w-full"></div>
+    <script>
+      (function () {
+        const storedTheme = localStorage.getItem('theme');
+        const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        const theme = storedTheme || (prefersLight ? 'light' : 'dark');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      })();
+    </script>
+
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

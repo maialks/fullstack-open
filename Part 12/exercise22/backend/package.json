@@ -1,0 +1,30 @@
+{
+  "name": "part4exercises",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "NODE_ENV=test node --test",
+    "test:only": "NODE_ENV=test node --test --test-only",
+    "createdb": "docker create --name mongo-test -p 27017:27017 mongo",
+    "startdb": "docker start mongo-test"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.12.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "nodemon": "^3.1.9"
+  }
+}

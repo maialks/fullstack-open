@@ -1,0 +1,41 @@
+Script started on 2025-11-03 14:38:42-03:00 [TERM="xterm-256color" TTY="/dev/pts/2" COLUMNS="80" LINES="24"]
+
+LKS-PC% docker ps -a
+CONTAINER ID   IMAGE                                     COMMAND                  CREATED         STATUS                        PORTS                      NAMES
+a93f11f890b4   ubuntu                                    "bash"                   4 minutes ago   Exited (0) 2 minutes ago                                 brave_colden
+626cd223612a   mongodb/mongodb-community-server:latest   "python3 /usr/local/…"   3 months ago    Exited (137) 10 minutes ago                              localmongo
+b9ac89b98db9   mongodb/mongodb-community-server:latest   "python3 /usr/local/…"   3 months ago    Exited (255) 2 months ago     0.0.0.0:27018->27017/tcp   part8execises
+
+LKS-PC% docker start -i brave_colden
+root@a93f11f890b4:/# apt-get update
+Fetched 34.5 MB in 4s (8378 kB/s)
+Reading package lists... Done
+
+root@a93f11f890b4:/# apt-get -y install vim
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  libexpat1 libgpm2 libpython3.12-minimal libpython3.12-stdlib libpython3.12t64 libreadline8t64 libsodium23 libsqlite3-0 media-types netbase readline-common tzdata vim-common
+  vim-runtime xxd
+The following NEW packages will be installed:
+  libexpat1 libgpm2 libpython3.12-minimal libpython3.12-stdlib libpython3.12t64 libreadline8t64 libsodium23 libsqlite3-0 media-types netbase readline-common tzdata vim
+  vim-common vim-runtime xxd
+0 upgraded, 16 newly installed, 0 to remove and 2 not upgraded.
+Need to get 16.4 MB of archives.
+After this operation, 72.1 MB of additional disk space will be used.
+Fetched 16.4 MB in 3s (5299 kB/s)
+Selecting previously unselected package libexpat1:amd64.
+(Reading database ... 4381 files and directories currently installed.)
+Preparing to unpack .../00-libexpat1_2.6.1-2ubuntu0.3_amd64.deb ...
+Unpacking libexpat1:amd64 (2.6.1-2ubuntu0.3) ...
+Setting up vim (2:9.1.0016-1ubuntu7.9) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.6) ...
+
+root@a93f11f890b4:/# vim /usr/src/app/index.js
+[File created with: console.log('Hello World')]
+
+root@a93f11f890b4:/# exit
+LKS-PC% exit
+
+Script done on 2025-11-03 14:44:31-03:00 [COMMAND_EXIT_CODE="0"]

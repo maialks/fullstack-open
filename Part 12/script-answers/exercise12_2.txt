@@ -1,0 +1,6 @@
+Script started on 2025-11-03 10:55:47-03:00 [TERM="xterm-256color" TTY="/dev/pts/1" COLUMNS="108" LINES="49"]
+[1m[7m%[27m[1m[0m                                                                                                            [0m[27m[24m[JLKS-PC% [K[?2004hlllaldfasdlfldasfjdsakf            [?2004l
+[1m[7m%[27m[1m[0m                                                                                                            [0m[27m[24m[JLKS-PC% [K[?2004h[?2004l
+[1m[7m%[27m[1m[0m                                                                                                            [0m[27m[24m[JLKS-PC% [K[?2004h[?2004l
+
+Script done on 2025-11-03 10:56:03-03:00 [COMMAND_EXIT_CODE="130"]

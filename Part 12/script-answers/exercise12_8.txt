@@ -1,0 +1,55 @@
+Script started on 2025-11-05 09:18:14-03:00
+
+docker compose -f docker-compose.dev.yaml up -d
+WARN[0000] Found orphan containers ([todo_backend]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
+[+] Running 1/1
+   Container todo-backend-mongo-1  Started  0.2s
+
+docker ps
+CONTAINER ID   IMAGE   COMMAND                  CREATED         STATUS         PORTS                                        NAMES
+0d7c9c3630dd   mongo   "docker-entrypoint.s…"   2 hours ago     Up 7 seconds   0.0.0.0:3456->27017/tcp, [::]:3456->27017/tcp   todo-backend-mongo-1
+
+docker exec -it 0d7c9c3630dd mongosh
+Current Mongosh Log ID: 690b40a4dad0f2f2c5ce5f46
+Connecting to: mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.5.8
+Using Mongosh: 2.5.8
+
+test> use the_database
+switched to db the_database
+
+the_database> db.auth('the_username', 'the_password')
+{ ok: 1 }
+
+the_database> show collections
+todos
+
+the_database> db.todos.insertOne({ text: "Increase the number of tools in my tool belt", done: false })
+{
+  acknowledged: true,
+  insertedId: ObjectId('690b40d9dad0f2f2c5ce5f47')
+}
+
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('690b2353f249819ddfce5f47'),
+    text: 'Write code',
+    done: true
+  },
+  {
+    _id: ObjectId('690b2353f249819ddfce5f48'),
+    text: 'Learn about containers',
+    done: false
+  },
+  {
+    _id: ObjectId('690b40d9dad0f2f2c5ce5f47'),
+    text: 'Increase the number of tools in my tool belt',
+    done: false
+  }
+]
+
+the_database> exit
+
+exit
+
+Script done on 2025-11-05 09:20:04-03:00 [COMMAND_EXIT_CODE="0"]

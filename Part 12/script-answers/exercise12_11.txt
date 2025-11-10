@@ -1,0 +1,39 @@
+Script started on 2025-11-06 06:44:42-03:00 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="95" LINES="24"]
+
+docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED        STATUS          PORTS                                           NAMES
+20e45e40a807   redis     "docker-entrypoint.s…"   16 hours ago   Up 26 minutes   0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp     todo-backend-redis-1
+0d7c9c3630dd   mongo     "docker-entrypoint.s…"   23 hours ago   Up 26 minutes   0.0.0.0:3456->27017/tcp, [::]:3456->27017/tcp   todo-backend-mongo-1
+
+docker exec -it 20e45e40a807 redis-cli
+127.0.0.1:6379> KEYS *
+1) "added_todos"
+127.0.0.1:6379> GET "added_todos"
+"1"
+127.0.0.1:6379> SET "added_todos" 9001
+OK
+127.0.0.1:6379> exit
+
+curl http://localhost:3000/statistics
+{"added_todos":"9001"}
+
+curl -X POST -H "Content-Type: application/json" -d '{"text": "chama"}' http://127.0.0.1:3000/todos
+{"_id":"690c6e663b611142a81be1c6","text":"chama","done":false,"__v":0}
+
+docker exec -it 20e45e40a807 redis-cli
+127.0.0.1:6379> GET "added_todos"
+"9002"
+127.0.0.1:6379> DEL "added_todos"
+(integer) 1
+127.0.0.1:6379> exit
+
+curl http://localhost:3000/statistics
+{"added_todos":0}
+
+curl -X POST -H "Content-Type: application/json" -d '{"text": "chama"}' http://127.0.0.1:3000/todos
+{"_id":"690c6ec83b611142a81be1c8","text":"chama","done":false,"__v":0}
+
+curl http://localhost:3000/statistics
+{"added_todos":"1"}
+
+Script done on 2025-11-06 06:47:58-03:00 [COMMAND_EXIT_CODE="0"]

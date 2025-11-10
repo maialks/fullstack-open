@@ -1,0 +1,30 @@
+services:
+  bloglist-backend:
+    image: bloglist-backend-dev
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    env_file:
+      - ./backend/.env.dev
+    volumes:
+      - ./backend:/usr/src/app
+
+  bloglist-frontend:
+    image: bloglist-frontend-dev
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend/:/usr/src/app
+    depends_on:
+      - bloglist-backend
+
+  nginx:
+    image: nginx:1.29.3
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - bloglist-frontend
+      - bloglist-backend
