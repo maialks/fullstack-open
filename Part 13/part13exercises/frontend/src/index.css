@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-background: var(--color-background);
+  --color-nav-bg: var(--color-nav-bg);
+  --color-sec-bg: var(--color-sec-bg);
+  --font-sora: 'Sora';
+}
+
+@layer theme {
+  :root {
+    --color-primary: #eaeaea;
+    --color-secondary: #080d0a;
+    --color-background: #ede8dc;
+    --color-nav-bg: #948979;
+    --color-sec-bg: #7b7e6b;
+  }
+  .dark {
+    --color-primary: #080d0a;
+    --color-secondary: #eaeaea;
+    --color-background: #212121;
+    --color-nav-bg: #1a1a1d;
+    --color-sec-bg: #603b3c;
+  }
+}
+
+a.active {
+  display: none;
+}
